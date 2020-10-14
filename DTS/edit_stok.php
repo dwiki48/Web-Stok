@@ -1,4 +1,38 @@
-<!DOCTYPE html>
+<?php
+session_start();
+include_once 'koneksi.php';
+
+if (!isset($_SESSION['userSession'])) {
+    header("Location: login.php");
+} else {
+    $sql = "SELECT * FROM user WHERE user_id=" . $_SESSION['userSession'];
+    $userquery = $MySQLi_CON->query($sql);
+    $userRow = $userquery->fetch_object();
+    $username = $userRow->username;
+}
+
+$id = $_GET['idbarang'];
+$userquery = $MySQLi_CON->query("SELECT * FROM barang WHERE idbarang = " . $id);
+$row = $userquery->fetch_object();
+if (isset($_POST["ubah"])) {
+    $hasil_stok = $_POST["stok_barang"];
+    $sql = "UPDATE barang SET stok_barang = '" . $hasil_stok . "' WHERE idbarang = " . $id;
+    if ($MySQLi_CON->query($sql) == TRUE) {
+        date_default_timezone_set('Asia/Jakarta');
+        $waktu = date("d/m/Y h:i:s");
+        $kegiatan = "Mengubah stok barang " . $row->nama_barang . " sehingga stok barang menjadi " . $hasil_stok;
+        $sqlhistory = "INSERT INTO history (waktu, jenis_barang, nama_barang, kegiatan) 
+	VALUES ('" . $waktu . "','" . $row->nama_barang . "','" . $row->jenis_barang . "','" . $kegiatan . "')";
+        if ($MySQLi_CON->query($sqlhistory) == TRUE) {
+            header("Location: stok_barang.php");
+        } else {
+            echo "Error dalam mengubah data: " . $MySQLi_CON->error;
+        }
+    } else {
+        echo "Error dalam mengubah data: " . $MySQLi_CON->error;
+    }
+}
+?>
 <html>
 
 <head>
@@ -75,23 +109,22 @@
                     <div class="card card-primary">
                         <!-- form start -->
                         <?php
-                        include 'koneksi.php';
                         $id = $_GET['idbarang'];
                         $data = mysqli_query($MySQLi_CON, "select * from barang where idbarang='$id'");
                         while ($d = mysqli_fetch_array($data)) {
                         ?>
-                            <form method="post" action="update_stok.php">
+                            <form method="post">
                                 <div class="card-body">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Update Stok</label>
+                                        <label for="exampleInputEmail1">Masukan Stok</label>
                                         <input type="hidden" name="idbarang" value="<?php echo $d['idbarang']; ?>">
-                                        <input type="text" name="stok_barang" class="form-control" id="exampleInputEmail1" value="<?php echo $d['stok_barang']; ?>" placeholder="Masukan Jumlah Stok">
+                                        <input type="number" name="stok_barang" class="form-control" id="exampleInputEmail1" value="<?php echo $d['stok_barang']; ?>" placeholder="Masukan Stok Barang">
                                     </div>
                                 </div>
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="submit" name="ubah" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
                         <?php

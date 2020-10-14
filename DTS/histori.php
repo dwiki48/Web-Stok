@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<?php
+session_start();
+include_once 'koneksi.php';
+
+if (!isset($_SESSION['userSession'])) {
+    header("Location: login.php");
+} else {
+    $sql = "SELECT * FROM user WHERE user_id=" . $_SESSION['userSession'];
+    $userquery = $MySQLi_CON->query($sql);
+    $userRow = $userquery->fetch_object();
+    $username = $userRow->username;
+}
+?>
 <html>
 
 <head>
@@ -61,7 +74,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Histori</li>
+                                <li class="breadcrumb-item active">Log Kegiatan</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -71,7 +84,44 @@
 
             <!-- Main content -->
             <section class="content">
-
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body table-responsive p-0" style="height: 750px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Waktu</th>
+                                        <th>User</th>
+                                        <th>Kegiatan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $no = 1;
+                                    $data = mysqli_query($MySQLi_CON, "select * from history");
+                                    while ($d = mysqli_fetch_array($data)) {
+                                    ?>
+                                        <tr>
+                                            <td><?php echo $no++; ?></td>
+                                            <td><?php echo $d['waktu']; ?></td>
+                                            <td><?php echo htmlentities($username) ?></td>
+                                            <td><?php echo $d['kegiatan']; ?></td>
+                                            <td>
+                                                <a href="delete_histori.php?idhistory=<?php echo $d['idhistory']; ?>" class="btn btn-danger">Hapus</a>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
             </section>
             <!-- /.content -->
         </div>

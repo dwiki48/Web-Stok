@@ -5,7 +5,7 @@
             <img src="../user.jpg" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-            <a href="#" class="d-block">Dwiki</a>
+            <a href="#" class="d-block"><?php echo htmlentities($username) ?></a>
         </div>
     </div>
 

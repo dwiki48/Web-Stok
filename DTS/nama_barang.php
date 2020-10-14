@@ -1,7 +1,53 @@
-<!DOCTYPE html>
+<?php
+session_start();
+include_once 'koneksi.php';
+
+if (!isset($_SESSION['userSession'])) {
+    header("Location: login.php");
+} else {
+    $sql = "SELECT * FROM user WHERE user_id=" . $_SESSION['userSession'];
+    $userquery = $MySQLi_CON->query($sql);
+    $userRow = $userquery->fetch_object();
+    $username = $userRow->username;
+}
+
+if (isset($_POST["tambah"])) {
+    $nama_barang = $_POST["nama_barang"];
+    $jenis_barang = $_POST["jenis_barang"];
+    $sql = "INSERT INTO barang (nama_barang, jenis_barang, stok_barang)
+VALUES ('" . $nama_barang . "','" . $jenis_barang . "',0)";
+
+    if ($MySQLi_CON->query($sql) == TRUE) {
+        date_default_timezone_set('Asia/Jakarta');
+        $waktu = date("d/m/Y h:i:s");
+        $kegiatan = "Menabahkan barang baru jenis " . $jenis_barang . " dengan nama " . $nama_barang;
+        $sqlhistory = "INSERT INTO history (waktu, jenis_barang, nama_barang, kegiatan) 
+VALUES ('" . $waktu . "','" . $nama_barang . "','" . $jenis_barang . "','" . $kegiatan . "')";
+        if ($MySQLi_CON->query($sqlhistory) == TRUE) {
+            header("Location: nama_barang.php");
+        } else {
+            echo "Error: " . $sql . "<br>" . $MySQLi_CON->error;
+        }
+    } else {
+        echo "Error: " . $sql . "<br>" . $MySQLi_CON->error;
+    }
+
+    $MySQLi_CON->close();
+}
+?>
 <html>
 
 <head>
+    <script type="application/javascript" src="jquery-2.1.3.js"></script>
+    <script type="application/javascript" src="jquery-ui.js"></script>
+    <script type="application/javascript" src="paging.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#tableData').paging({
+                limit: 10
+            });
+        });
+    </script>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Admin Stok Barang</title>
@@ -102,7 +148,6 @@
                                             <td><?php echo $d['nama_barang']; ?></td>
                                             <td><?php echo $d['jenis_barang']; ?></td>
                                             <td>
-
                                                 <a href="edit_barang.php?idbarang=<?php echo $d['idbarang']; ?>" class="btn btn-warning">EDIT</a>
                                                 <a href="hapus_barang.php?idbarang=<?php echo $d['idbarang']; ?>" class="btn btn-danger">HAPUS</a>
                                             </td>
@@ -181,7 +226,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="tambah_barang.php">
+                <form method="post">
                     <div class="form-group">
                         <label for="exampleFormControlInput1">Nama Barang</label>
                         <input type="text" class="form-control" name="nama_barang" placeholder="Masukan Merk">
@@ -193,7 +238,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" value="Submit" class="btn btn-primary">Simpan</button>
+                <button type="submit" name="tambah" value="Submit" class="btn btn-primary">Simpan</button>
             </div>
             </form>
         </div>

@@ -1,4 +1,17 @@
 <!DOCTYPE html>
+<?php
+session_start();
+include_once 'koneksi.php';
+
+if (!isset($_SESSION['userSession'])) {
+    header("Location: login.php");
+} else {
+    $sql = "SELECT * FROM user WHERE user_id=" . $_SESSION['userSession'];
+    $userquery = $MySQLi_CON->query($sql);
+    $userRow = $userquery->fetch_object();
+    $username = $userRow->username;
+}
+?>
 <html>
 
 <head>

@@ -1,4 +1,41 @@
-<!DOCTYPE html>
+<?php
+session_start();
+include_once 'koneksi.php';
+
+if (!isset($_SESSION['userSession'])) {
+    header("Location: login.php");
+} else {
+    $sql = "SELECT * FROM user WHERE user_id=" . $_SESSION['userSession'];
+    $userquery = $MySQLi_CON->query($sql);
+    $userRow = $userquery->fetch_object();
+    $username = $userRow->username;
+}
+
+$id = $_GET['idbarang'];
+$userquery = $MySQLi_CON->query("SELECT * FROM barang WHERE idbarang = " . $id);
+$row = $userquery->fetch_object();
+if (isset($_POST["ubah"])) {
+    $nama_barang = $_POST["nama_barang"];
+    $jenis_barang = $_POST["jenis_barang"];
+    $sql = "UPDATE barang SET nama_barang = '" . $nama_barang . "', jenis_barang = '" . $jenis_barang . "' WHERE idbarang = " . $id;
+    if ($MySQLi_CON->query($sql) == TRUE) {
+        date_default_timezone_set('Asia/Jakarta');
+        $waktu = date("d/m/Y h:i:s");
+        $kegiatan = "Mengubah nama barang " . $row->nama_barang . " menjadi " . $nama_barang . " dan mengubah jenis barang " . $row->jenis_barang . " menjadi " . $jenis_barang;
+        $sqlhistory = "INSERT INTO history (waktu, jenis_barang, nama_barang, kegiatan) 
+	VALUES ('" . $waktu . "','" . $row->nama_barang . "','" . $row->jenis_barang . "','" . $kegiatan . "')";
+        if ($MySQLi_CON->query($sqlhistory) == TRUE) {
+            header("Location: nama_barang.php");
+        } else {
+            echo "Error dalam mengubah data: " . $MySQLi_CON->error;
+        }
+    } else {
+        echo "Error dalam mengubah data: " . $MySQLi_CON->error;
+    }
+
+    $MySQLi_CON->close();
+}
+?>
 <html>
 
 <head>
@@ -75,12 +112,11 @@
                     <div class="card card-primary">
                         <!-- form start -->
                         <?php
-                        include 'koneksi.php';
                         $id = $_GET['idbarang'];
                         $data = mysqli_query($MySQLi_CON, "select * from barang where idbarang='$id'");
                         while ($d = mysqli_fetch_array($data)) {
                         ?>
-                            <form method="post" action="update.php">
+                            <form method="post">
                                 <div class="card-body">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Nama Barang</label>
@@ -95,7 +131,7 @@
                                 <!-- /.card-body -->
 
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <button type="submit" name="ubah" class="btn btn-primary">Simpan</button>
                                 </div>
                             </form>
                         <?php

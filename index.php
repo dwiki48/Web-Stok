@@ -11,14 +11,6 @@ if (!isset($_SESSION['userSession'])) {
     $userRow = $userquery->fetch_object();
     $username = $userRow->username;
 }
-
-// $tablebarang = "SELECT * FROM barang";
-// $tablebarangquery = $MySQLi_CON->query($tablebarang);
-// $tablebarangrow = $tablebarangquery->num_rows;
-
-// $tablehistory = "SELECT * FROM history";
-// $tablehistoryquery = $MySQLi_CON->query($tablehistory);
-// $tablehistoryrow = $tablehistoryquery->num_rows;
 ?>
 <html>
 
@@ -71,7 +63,7 @@ if (!isset($_SESSION['userSession'])) {
                         <img src="user.jpg" class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">Dwiki</a>
+                        <a href="#" class="d-block"><?php echo htmlentities($username) ?></a>
                     </div>
                 </div>
 
