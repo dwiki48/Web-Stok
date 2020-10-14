@@ -60,7 +60,7 @@ if (!isset($_SESSION['userSession'])) {
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+        <aside class="main-sidebar sidebar-light-maroon elevation-4">
             <!-- Brand Logo -->
 
             <!-- Sidebar -->
@@ -107,14 +107,6 @@ if (!isset($_SESSION['userSession'])) {
                                 <i class="nav-icon far fa-calendar-alt"></i>
                                 <p>
                                     Histori
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="logout.php" class="nav-link">
-                                <i class="nav-icon fa fa-power-off"></i>
-                                <p>
-                                    Logout
                                 </p>
                             </a>
                         </li>
