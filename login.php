@@ -15,7 +15,7 @@ if (isset($_POST['btn-login'])) {
         $_SESSION['userSession'] = $row['user_id'];
         header("Location: index.php");
     } else {
-        $msg = "username or password does not exists !";
+        $msg = "username atau password salah !";
     }
     $MySQLi_CON->close();
 }
