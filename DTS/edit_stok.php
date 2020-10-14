@@ -56,12 +56,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0 text-dark">Stok Barang</h1>
+                            <h1 class="m-0 text-dark">Edit Barang</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active">Stok Barang</li>
+                                <li class="breadcrumb-item active">Nama Barang</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -72,44 +72,31 @@
             <!-- Main content -->
             <section class="content">
                 <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
+                    <div class="card card-primary">
+                        <!-- form start -->
+                        <?php
+                        include 'koneksi.php';
+                        $id = $_GET['idbarang'];
+                        $data = mysqli_query($MySQLi_CON, "select * from barang where idbarang='$id'");
+                        while ($d = mysqli_fetch_array($data)) {
+                        ?>
+                            <form method="post" action="update_stok.php">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Update Stok</label>
+                                        <input type="hidden" name="idbarang" value="<?php echo $d['idbarang']; ?>">
+                                        <input type="text" name="stok_barang" class="form-control" id="exampleInputEmail1" value="<?php echo $d['stok_barang']; ?>" placeholder="Masukan Jumlah Stok">
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
 
-                        </div>
-                        <div class="card-body table-responsive p-0" style="height: 600px;">
-                            <table class="table table-head-fixed text-nowrap">
-                                <thead>
-                                    <tr>
-                                        <th>No</th>
-                                        <th>Nama Barang</th>
-                                        <th>Jenis</th>
-                                        <th>Stok</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php
-                                    include 'koneksi.php';
-                                    $no = 1;
-                                    $data = mysqli_query($MySQLi_CON, "select * from barang");
-                                    while ($d = mysqli_fetch_array($data)) {
-                                    ?>
-                                        <tr>
-                                            <td><?php echo $no++; ?></td>
-                                            <td><?php echo $d['nama_barang']; ?></td>
-                                            <td><?php echo $d['jenis_barang']; ?></td>
-                                            <td><?php echo $d['stok_barang']; ?></td>
-                                            <td>
-                                                <a href="edit_stok.php?idbarang=<?php echo $d['idbarang']; ?>" class="btn btn-warning">Edit Stok</a>
-                                            </td>
-                                        </tr>
-                                    <?php
-                                    }
-                                    ?>
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- /.card-body -->
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                </div>
+                            </form>
+                        <?php
+                        }
+                        ?>
                     </div>
                     <!-- /.card -->
                 </div>
