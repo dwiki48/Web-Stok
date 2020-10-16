@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <?php
 session_start();
 include_once 'DTS/koneksi.php';
@@ -11,6 +10,14 @@ if (!isset($_SESSION['userSession'])) {
     $userRow = $userquery->fetch_object();
     $username = $userRow->username;
 }
+
+$tablebarang = "SELECT * FROM barang";
+$tablebarangquery = $MySQLi_CON->query($tablebarang);
+$tablebarangrow = $tablebarangquery->num_rows;
+
+$tablehistory = "SELECT * FROM history";
+$tablehistoryquery = $MySQLi_CON->query($tablehistory);
+$tablehistoryrow = $tablehistoryquery->num_rows;
 ?>
 <html>
 
@@ -131,7 +138,40 @@ if (!isset($_SESSION['userSession'])) {
 
             <!-- Main content -->
             <section class="content">
+                <div class="container-fluid">
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3><?php echo $tablebarangrow; ?></h3>
 
+                                    <p>Total Barang</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="DTS/nama_barang.php" class="small-box-footer">Detail <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                        <div class="col-lg-3 col-6">
+                            <!-- small box -->
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3><?php echo $tablehistoryrow; ?></h3>
+                                    <p>Log Histori</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="DTS/histori.php" class="small-box-footer">Detail <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <!-- ./col -->
+                    </div>
+                </div><!-- /.container-fluid -->
             </section>
             <!-- /.content -->
         </div>
